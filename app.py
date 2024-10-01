@@ -7,10 +7,9 @@ from flask import Flask, redirect, url_for, render_template, request
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
 
-
 app = Flask(__name__)
 
-app.config['MAIL_SERVER']='smtp.qq.com'
+app.config['MAIL_SERVER'] = 'smtp.qq.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = '1130221300@qq.com'
 app.config['MAIL_PASSWORD'] = 'iflthvxkjsjzgdji'
@@ -18,9 +17,11 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
+
 @app.route('/hello_world')
 def hello_world():
     return "hello world！！！"
+
 
 @app.route('/send_mail')
 def send_mail():
@@ -40,6 +41,7 @@ def redirect_url(name):
     if name == 'hello':
         return redirect(url_for('hello_world'))
 
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -48,14 +50,15 @@ def upload_file():
 
         # 拼接完整的保存路径
         file_path = os.path.join('uploads', secure_filename(f.filename))
-
+        # 检查目录是否存在，如果不存在则创建目录
+        directory = os.path.dirname(file_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         # 保存文件
         f.save(file_path)
         return 'file uploaded successfully'
     else:
         return render_template('upload.html')
-
-
 
 
 if __name__ == '__main__':
